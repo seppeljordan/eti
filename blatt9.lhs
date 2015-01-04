@@ -4,6 +4,7 @@
 \usepackage[ngerman]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{mathtools}
+\usepackage{hyperref}
 
 \newcommand{\code}[1]{\texttt{ #1 }}
 
@@ -56,13 +57,13 @@ Die Übergangsfunktion $\delta$ sei durch folgende Tabelle gegeben.
   \right.
 \end{equation*}
 
-Der Automat terminiert, falls er ein Wort der Länge 1 liest.  Im
-allgemeinen wird das erste Zeichen markiert und dann das Eingabeband
-von links nach rechts gelesen.  Der Automat ``merkt'' sich das zuletzt
-gelesene Zeichen und ob das Eingabeband bereits sortiert ist.  Trift
-der Automat auf eine Stelle an der zuvor eine 1 gelesen wurde dann
-eine 0 auf dem Eingabeband erscheint, werden die 1 und die 0
-``getauscht'' und der Automat betrachtet die Eingabe als unsortiert.
+Der Automat terminiert im ersten Schritt, falls er ein Wort der Länge
+1 liest.  Im allgemeinen wird das erste Zeichen markiert und dann das
+Eingabeband von links nach rechts gelesen.  Der Automat ``merkt'' sich
+das zuletzt gelesene Zeichen und ob das Eingabeband bereits sortiert
+ist.  Trift der Automat auf eine Stelle an der zuvor eine 1 gelesen
+wurde dann eine 0 auf dem Eingabeband erscheint, werden die 1 und die
+0 ``getauscht'' und der Automat betrachtet die Eingabe als unsortiert.
 Wenn der Automat das letzte Zeichen liest und das Band sortiert ist,
 geht der Automat in den Endzustand, ansonsten wird der Lesekopf an den
 Anfang des Eingabebandes bewegt und die Prozedur wiederholt.
@@ -184,14 +185,24 @@ alle Variablen in Terminale umgewandelt.
   $BaBbCa$, $Babb$, $Babbb$, $Babbbb$, $BabC$, $BabCb$, $BabCbb$,
   $bbabb$, $bbabbb$, $bbabC$, $bbabCb$, $Cbabb$, $Cbabbb$, $CbabC$,
   $CbabCb\,\}$
+\item[$T^6_7$] $=$ $T^6_6$
 \end{description}
+
+Ab $T^6_5$ kommen keine weiteren Elemente zu den folgenden Listen mehr
+hinzu.
 
 Für den Fall, dass es den Korrektor oder die Korrektorin interessiert,
 wie diese Ergebnisse zu stande gekommen sind, habe ich das ``literate
 Haskell'', dass ich zur Lösung der Aufgabe geschrieben habe,
-beigefügt.  Viel Spaß beim Lesen.
+beigefügt.  Viel Spaß beim Lesen\footnote{URL:
+  \url{https://github.com/seppeljordan/eti/blob/master/blatt9.lhs}}.
 
-\subsubsection*{Haskellprogramm zur Lösung der Aufgabe}
+\subsubsection*{Haskellprogramm\footnote{
+    Wir verzichten auf \code{main}-Funktion, d.h. dass der Code mithilfe
+    einer REPL, wie zum Beispiel ``ghci'' aufgerufen werden sollte.
+  }
+  zur Lösung der Aufgabe}
+
 
 Da wir es mit nicht-Determinismus zutun haben, werden wir wohl die
 Implementation von Listen als \code{Applicative} nutzen.  Außerdem
@@ -203,7 +214,7 @@ import Data.List
 import Control.Applicative
 \end{code}
 
-Wir repraesentieren alle Symbole als Char, egal ob Terminal oder
+Wir repräsentieren alle Symbole als Char, egal ob Terminal oder
 Variable.
 
 \begin{code}
@@ -227,7 +238,7 @@ grammarVars (vs,_,_,_) = vs
 grammarTerms (_,ts,_,_) = ts
 \end{code}
 
-Die Grammatik aus der Aufgabenstellung laesst sich also
+Die Grammatik aus der Aufgabenstellung lässt sich also
 folgendermaßen darstellen.
 
 \begin{code}
@@ -256,8 +267,8 @@ rewrite rules exp =
       Just rewritten -> rewritten
 \end{code}
 
-Wir wollen definieren, was es heiszt, dass alle Ableitungen aller
-Praefixe gebildet werden.
+Wir wollen definieren, was es heißt, dass alle Ableitungen aller
+Präfixe gebildet werden.
 
 \begin{code}
 derivePrefixes :: [Rule] -> [Symbol] -> [[Symbol]]
@@ -291,7 +302,7 @@ deriveN n rules word =
               (take n (repeat (deriveWord rules)))
 \end{code}
 
-Wir muessen noch die Sortierung der Worte definieren.  Dafuer
+Wir müssen noch die Sortierung der Worte definieren.  Dafür
 definieren wir erstmal die Reihenfolge pro Zeichen mithilfe einer
 Liste.
 
@@ -349,7 +360,7 @@ t gram m n =
           startingSymbol = grammarStart gram
 \end{code}
 
-Jetzt koennen wir die Funktion \code{t} nutzen um netten
+Jetzt können wir die Funktion \code{t} nutzen um netten
 \LaTeX{}-Output zu erzeugen.
 
 \begin{code}
@@ -364,8 +375,10 @@ showAsTex =
           showList (x:xs) = "$"++x++"$, "++showList xs
           showList' [] = "$\\emptyset$"
           showList' xs = "$\\{$ "++showList xs
-          
 \end{code}
+
+Die Funktion \code{showAsTex} schreibt nun die ersten 6 $T_m^6$ auf
+die Standardausgabe.
 
 \subsection*{b)}
 
